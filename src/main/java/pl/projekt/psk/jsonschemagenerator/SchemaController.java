@@ -24,6 +24,9 @@ public class SchemaController {
 
     @PostMapping("/generate")
     public String generate(@RequestParam String jsonInput, Model model) {
+        if (jsonInput == null || jsonInput.isEmpty()) {
+            throw new IllegalArgumentException("Json input cannot be null or empty");
+        }
         JsonNode jsonNode = objectMapper.readTree(jsonInput);
         String hardcodedSchema = "{\n" +
                 "  \"location\": \"object\",\n" +
