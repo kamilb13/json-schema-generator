@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Generator Schematu JSON</title>
+</head>
+<body style="font-family: sans-serif; padding: 20px;">
+
+<h2>Generator Schematu z próbki JSON</h2>
+
+<form th:action="@{/generate}" method="post" style="display: flex; gap: 20px;">
+    <div>
+        <h3>Przykładowy JSON:</h3>
+        <textarea name="jsonInput" th:text="${jsonInput}" rows="20" cols="60" placeholder="Wklej tutaj..."></textarea>
+        <br><br>
+        <button type="submit" style="padding: 10px 20px;">Generuj schemat</button>
+    </div>
+
+    <div th:if="${schemaOutput}">
+        <h3>Wygenerowany Schemat:</h3>
+        <textarea readonly rows="20" cols="60" th:text="${schemaOutput}"></textarea>
+    </div>
+</form>
+
+<div th:if="${error}" style="color: red; margin-top: 20px;">
+    <b th:text="${error}"></b>
+</div>
+
+</body>
+</html>
