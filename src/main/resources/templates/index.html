@@ -70,9 +70,11 @@
             </div>
         </div>
         <button type="submit">Generuj schemat</button>
+        <button type="submit" th:formaction="@{/checkJson}">Sprawdź czy twój json jest poprawny</button>
     </form>
-    <div th:if="${error}" style="background-color: #fee2e2; color: #dc2626; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
-        <strong>Error: </strong> <span th:text="${error}"></span>
+    <div th:if="${isValid != null}" th:style="${isValid} ? 'background-color: #d4edda;' : 'background-color: #f8d7da;'">
+        <span th:if="${isValid}">Twój JSON jest poprawny</span>
+        <span th:if="${!isValid}">Twój JSON jest niepoprawny, ponieważ: <span th:text="${error}"/></span>
     </div>
 </div>
 
