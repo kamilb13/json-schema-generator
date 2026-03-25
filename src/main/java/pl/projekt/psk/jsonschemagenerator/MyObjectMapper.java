@@ -19,6 +19,8 @@ public class MyObjectMapper {
     7. wrzucam do map aktualny klucz i wartosc i zeruje bufor i aktualny klucz
     8. WAZNE: jesli podczas parsowania wartosci okaze sie ze zawiera ona znak '{' oznacza to zagniezdzony
        obiekt i tutaj w chodzi w gre rekurencja
+    9. na samym koncu zawsze znajduje sie wartosc ktora po sobie nie ma znaku ',' wiec nie czekam na znak ','
+       bez tego ostani elemnt nie zostal by dodany do mapy wynikowej!!
      */
     public static Map<String, Object> fromJson(String json) {
         if (json == null || json.isEmpty()) {
@@ -49,6 +51,7 @@ public class MyObjectMapper {
                 bufor.append(znak);
             }
         }
+        map.put(aktualnyKlucz, parseValue(bufor.toString()));
         return map;
     }
 
