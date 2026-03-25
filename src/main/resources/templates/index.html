@@ -15,7 +15,6 @@
         .grid {
             display: flex;
             gap: 20px;
-            margin-bottom: 20px;
         }
 
         .col {
@@ -45,34 +44,30 @@
         button:hover {
             background: #0056b3;
         }
-
-        h3 {
-            margin-top: 0;
-            font-size: 16px;
-            color: #666;
-        }
     </style>
 </head>
 <body>
 
 <div>
-    <h2 style="margin-top:0">Generator Schematu JSON</h2>
+    <h2>Generator Schematu JSON</h2>
     <form th:action="@{/generate}" method="post">
         <div class="grid">
             <div class="col">
                 <h3>Wejście (JSON):</h3>
-                <textarea name="jsonInput" th:text="${jsonInput}" rows="15" placeholder="Wklej JSON..."></textarea>
+                <textarea name="jsonInput" th:text="${jsonInput}" rows="25" placeholder="Wklej JSON..."></textarea>
             </div>
 
             <div class="col" th:if="${schemaOutput}">
                 <h3>Wynik (Schema):</h3>
-                <textarea readonly rows="15" th:text="${schemaOutput}"></textarea>
+                <textarea readonly rows="25" th:text="${schemaOutput}"></textarea>
             </div>
         </div>
         <button type="submit">Generuj schemat</button>
+        <button type="submit" th:formaction="@{/checkJson}">Sprawdź czy twój json jest poprawny</button>
     </form>
-    <div th:if="${error}" style="background-color: #fee2e2; color: #dc2626; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
-        <strong>Error: </strong> <span th:text="${error}"></span>
+    <div th:if="${isValid != null}" th:style="${isValid} ? 'background-color: #d4edda;' : 'background-color: #f8d7da;'">
+        <span th:if="${isValid}">Twój JSON jest poprawny</span>
+        <span th:if="${!isValid}">Twój JSON jest niepoprawny, ponieważ: <span th:text="${error}"/></span>
     </div>
 </div>
 
