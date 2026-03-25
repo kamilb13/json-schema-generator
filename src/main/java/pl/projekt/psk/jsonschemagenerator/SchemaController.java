@@ -12,6 +12,8 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.JsonNodeType;
 
+import java.util.Map;
+
 @Controller
 @RequiredArgsConstructor
 public class SchemaController {
@@ -29,7 +31,7 @@ public class SchemaController {
         if (jsonInput == null || jsonInput.isEmpty()) {
             throw new IllegalArgumentException("Json input cannot be null or empty");
         }
-
+        Map<String, Object> stringStringMap = MyObjectMapper.fromJson(jsonInput);
         JsonNode jsonNode = objectMapper.readTree(jsonInput);
         var schema = schemaService.generateSchema(jsonNode);
 
