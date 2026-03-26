@@ -1,6 +1,8 @@
 package pl.projekt.psk.jsonschemagenerator;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MyObjectMapper {
@@ -63,9 +65,65 @@ public class MyObjectMapper {
 
     private static Object parseValue(String tekst) {
         tekst = tekst.trim();
+
         if (tekst.startsWith(String.valueOf(KLAMRA_CHAR_O))) {
             return fromJson(tekst);
         }
-        return tekst.replace("\"", EMPTY_STRING);
+
+        if (tekst.startsWith("[")) {
+            return parseArray(tekst);
+        }
+
+        if (tekst.equals("true") ||  tekst.equals("false")) {
+            return Boolean.parseBoolean(tekst);
+        }
+
+        if (tekst.equals("null")) {
+            return null;
+        }
+
+        try {
+            return Integer.parseInt(tekst);
+        } catch (NumberFormatException e) {
+            try {
+                return Double.parseDouble(tekst);
+            } catch (NumberFormatException ex) {
+                return tekst.replace("\"", EMPTY_STRING);
+            }
+        }
+    }
+
+    private static List<Object> parseArray(String text) {
+        var list = new ArrayList<>();
+
+        if (text == null || text.isEmpty()) {
+            return new ArrayList<>();
+        }
+        text = text.trim();
+
+        if (text.startsWith(String.valueOf('[')) && text.endsWith(String.valueOf(']'))) {
+            text = text.substring(1, text.length() - 1);
+        }
+        int licznikKlamr = 0;
+
+        StringBuilder bufor = new StringBuilder();
+//        String aktualnyKlucz = null;
+
+        for (char znak : text.toCharArray()) {
+            licznikKlamr = liczKlamryDoDalszychKrokow(znak, licznikKlamr);
+
+            if (znak == ':' && licznikKlamr == 0) {
+//                aktualnyKlucz = bufor.toString().trim().replace("\"", EMPTY_STRING);
+                bufor.setLength(0);
+            } else if (znak == ',' && licznikKlamr == 0) {
+                list.add(parseValue(bufor.toString()));
+                bufor.setLength(0);
+//                aktualnyKlucz = null;
+            } else {
+                bufor.append(znak);
+            }
+        }
+        list.add(parseValue(bufor.toString()));
+        return list;
     }
 }
