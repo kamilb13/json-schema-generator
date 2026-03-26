@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import tools.jackson.core.StreamReadFeature;
-import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -35,10 +34,9 @@ public class SchemaController {
             throw new IllegalArgumentException("Json input cannot be null or empty");
         }
         Map<String, Object> parsedJson = MyObjectMapper.fromJson(jsonInput);
-        JsonNode jsonNode = objectMapper.readTree(jsonInput);
-        var schema = schemaService.generateSchema(jsonNode);
+        String prettySchema = schemaService.generateSchema(parsedJson);
 
-        model.addAttribute("schemaOutput", schema.toPrettyString());
+        model.addAttribute("schemaOutput", prettySchema);
         model.addAttribute("jsonInput", jsonInput);
         return "index";
     }
