@@ -11,15 +11,14 @@ import tools.jackson.core.StreamReadFeature;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
-
 import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
 public class SchemaController {
     private final ObjectMapper objectMapper = JsonMapper.builder()
-                                                        .enable(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION)
-                                                        .build();
+            .enable(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION)
+            .build();
     private final SchemaService schemaService;
 
     @GetMapping("/")

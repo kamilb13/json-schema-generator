@@ -74,7 +74,7 @@ public class MyObjectMapper {
             return parseArray(tekst);
         }
 
-        if (tekst.equals("true") ||  tekst.equals("false")) {
+        if (tekst.equals("true") || tekst.equals("false")) {
             return Boolean.parseBoolean(tekst);
         }
 

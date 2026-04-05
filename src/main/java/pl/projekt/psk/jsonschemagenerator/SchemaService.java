@@ -19,7 +19,7 @@ public class SchemaService {
             schema.put("type", "object");
             Map<?, ?> objectMap = (Map<?, ?>) object;
             Map<String, Object> properties = new LinkedHashMap<>();
-            for (Map.Entry<?, ?> property: objectMap.entrySet()) {
+            for (Map.Entry<?, ?> property : objectMap.entrySet()) {
                 properties.put(property.getKey().toString(), generateSchema(property.getValue()));
             }
             schema.put("properties", properties);
@@ -86,7 +86,7 @@ public class SchemaService {
 
     private String toPrettyString(Map<String, Object> schema) {
         StringBuilder prettyJson = new StringBuilder("{");
-        for (Map.Entry<String, Object> properties: schema.entrySet()) {
+        for (Map.Entry<String, Object> properties : schema.entrySet()) {
             prettyJson.append("\r\n\"").append(properties.getKey()).append("\":")
                     .append("\"").append(properties.getValue()).append("\",");
         }
