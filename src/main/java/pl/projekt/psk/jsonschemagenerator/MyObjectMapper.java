@@ -33,6 +33,7 @@ public class MyObjectMapper {
             cleanJson = cleanJson.substring(1, cleanJson.length() - 1);
         }
         int licznikKlamr = 0;
+        int licznikNawiasow = 0;
 
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
 
@@ -41,11 +42,12 @@ public class MyObjectMapper {
 
         for (char znak : cleanJson.toCharArray()) {
             licznikKlamr = liczKlamryDoDalszychKrokow(znak, licznikKlamr);
+            licznikNawiasow = liczNawiasyDoDalszychKrokow(znak, licznikNawiasow);
 
-            if (znak == ':' && licznikKlamr == 0) {
+            if (znak == ':' && licznikKlamr == 0 && licznikNawiasow == 0) {
                 aktualnyKlucz = bufor.toString().trim().replace("\"", EMPTY_STRING);
                 bufor.setLength(0);
-            } else if (znak == ',' && licznikKlamr == 0) {
+            } else if (znak == ',' && licznikKlamr == 0 && licznikNawiasow == 0) {
                 map.put(aktualnyKlucz, parseValue(bufor.toString()));
                 bufor.setLength(0);
                 aktualnyKlucz = null;
@@ -53,7 +55,9 @@ public class MyObjectMapper {
                 bufor.append(znak);
             }
         }
-        map.put(aktualnyKlucz, parseValue(bufor.toString()));
+        if (aktualnyKlucz != null) {
+            map.put(aktualnyKlucz, parseValue(bufor.toString()));
+        }
         return map;
     }
 
@@ -61,6 +65,12 @@ public class MyObjectMapper {
         if (KLAMRA_CHAR_O == znak) licznikKlamr++;
         if (KLAMRA_CHAR_Z == znak) licznikKlamr--;
         return licznikKlamr;
+    }
+
+    private static int liczNawiasyDoDalszychKrokow(char znak, int licznikNawiasow) {
+        if ('[' == znak) licznikNawiasow++;
+        if (']' == znak) licznikNawiasow--;
+        return licznikNawiasow;
     }
 
     private static Object parseValue(String tekst) {
@@ -104,26 +114,27 @@ public class MyObjectMapper {
         if (text.startsWith(String.valueOf('[')) && text.endsWith(String.valueOf(']'))) {
             text = text.substring(1, text.length() - 1);
         }
+
         int licznikKlamr = 0;
+        int licznikNawiasow = 0;
 
         StringBuilder bufor = new StringBuilder();
-//        String aktualnyKlucz = null;
 
         for (char znak : text.toCharArray()) {
             licznikKlamr = liczKlamryDoDalszychKrokow(znak, licznikKlamr);
+            licznikNawiasow = liczNawiasyDoDalszychKrokow(znak, licznikNawiasow);
 
-            if (znak == ':' && licznikKlamr == 0) {
-//                aktualnyKlucz = bufor.toString().trim().replace("\"", EMPTY_STRING);
-                bufor.setLength(0);
-            } else if (znak == ',' && licznikKlamr == 0) {
+            if (znak == ',' && licznikKlamr == 0 && licznikNawiasow == 0) {
                 list.add(parseValue(bufor.toString()));
                 bufor.setLength(0);
-//                aktualnyKlucz = null;
             } else {
                 bufor.append(znak);
             }
         }
-        list.add(parseValue(bufor.toString()));
+
+        if (!bufor.toString().trim().isEmpty()) {
+            list.add(parseValue(bufor.toString()));
+        }
         return list;
     }
 }
