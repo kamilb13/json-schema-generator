@@ -11,6 +11,7 @@ import tools.jackson.core.StreamReadFeature;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
+import javax.swing.*;
 import java.util.Map;
 
 @Controller
@@ -51,4 +52,16 @@ public class SchemaController {
         model.addAttribute("jsonInput", jsonInput);
         return "index";
     }
+
+//    @GetMapping("/selectFile")
+//    public String selectFile() {
+//        JFileChooser chooser = new JFileChooser();
+//        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+//
+//        int result = chooser.showOpenDialog(null);
+//        if (result == JFileChooser.APPROVE_OPTION) {
+//            return chooser.getSelectedFile().getAbsolutePath();
+//        }
+//        return "Error";
+//    }
 }
