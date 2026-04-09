@@ -1,4 +1,4 @@
-﻿package pl.projekt.psk.jsonschemagenerator.repositories;
+package pl.projekt.psk.jsonschemagenerator.repositories;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import pl.projekt.psk.jsonschemagenerator.models.JsonSchema;

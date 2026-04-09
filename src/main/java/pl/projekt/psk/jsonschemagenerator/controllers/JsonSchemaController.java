@@ -1,4 +1,4 @@
-﻿package pl.projekt.psk.jsonschemagenerator.controllers;
+package pl.projekt.psk.jsonschemagenerator.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

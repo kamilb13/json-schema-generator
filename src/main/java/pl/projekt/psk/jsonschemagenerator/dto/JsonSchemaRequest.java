@@ -1,4 +1,4 @@
-﻿package pl.projekt.psk.jsonschemagenerator.dto;
+package pl.projekt.psk.jsonschemagenerator.dto;
 
 import lombok.Getter;
 

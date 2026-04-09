@@ -1,4 +1,4 @@
-﻿package pl.projekt.psk.jsonschemagenerator.models;
+package pl.projekt.psk.jsonschemagenerator.models;
 
 import lombok.Getter;
 import lombok.Setter;
