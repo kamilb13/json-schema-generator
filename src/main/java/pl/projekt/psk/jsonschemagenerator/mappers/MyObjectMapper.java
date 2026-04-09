@@ -1,4 +1,4 @@
-package pl.projekt.psk.jsonschemagenerator;
+package pl.projekt.psk.jsonschemagenerator.mappers;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

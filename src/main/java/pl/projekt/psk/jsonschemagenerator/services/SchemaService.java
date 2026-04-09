@@ -1,4 +1,4 @@
-package pl.projekt.psk.jsonschemagenerator;
+package pl.projekt.psk.jsonschemagenerator.services;
 
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.JsonNode;
