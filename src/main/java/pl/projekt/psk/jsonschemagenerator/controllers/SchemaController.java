@@ -1,17 +1,19 @@
-package pl.projekt.psk.jsonschemagenerator;
+package pl.projekt.psk.jsonschemagenerator.controllers;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import pl.projekt.psk.jsonschemagenerator.MyObjectMapper;
+import pl.projekt.psk.jsonschemagenerator.SchemaService;
+import pl.projekt.psk.jsonschemagenerator.repositories.JsonSchemaRepository;
 import tools.jackson.core.StreamReadFeature;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
-import javax.swing.*;
 import java.util.Map;
 
 @Controller
@@ -21,14 +23,18 @@ public class SchemaController {
             .enable(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION)
             .build();
     private final SchemaService schemaService;
+    private final JsonSchemaRepository jsonSchemaRepository;
 
     @GetMapping("/")
-    public String index() {
+    public String index(Model model) {
+        model.addAttribute("schemas", jsonSchemaRepository.findAll());
         return "index";
     }
 
     @PostMapping("/generate")
     public String generate(@RequestParam String jsonInput, Model model, HttpServletRequest request) {
+        model.addAttribute("schemas", jsonSchemaRepository.findAll());
+
         request.setAttribute("jsonInput", jsonInput);
         if (jsonInput == null || jsonInput.isEmpty()) {
             throw new IllegalArgumentException("Json input cannot be null or empty");
@@ -43,6 +49,8 @@ public class SchemaController {
 
     @PostMapping("/checkJson")
     public String isJsonValid(@RequestParam String jsonInput, Model model, HttpServletRequest request) {
+        model.addAttribute("schemas", jsonSchemaRepository.findAll());
+
         request.setAttribute("jsonInput", jsonInput);
         if (jsonInput == null || jsonInput.isEmpty()) {
             throw new IllegalArgumentException("Json input cannot be null or empty");
