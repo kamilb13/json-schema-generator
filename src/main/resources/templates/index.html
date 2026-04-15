@@ -52,9 +52,9 @@
     <h2>Generator Schematu JSON</h2>
     <form th:action="@{/generate}" method="post">
         <div>
-            <label>Wybierz schemat fakturki:</label>
-            <select>
-                <option value="">brak / Dowolny JSON</option>
+            <label>Wybierz schemat faktury:</label>
+            <select id="schemaSelect" onchange="loadSchema()">
+                <option value="">Brak</option>
                 <option th:each="s : ${schemas}"
                         th:value="${s.id}"
                         th:text="${s.name}"></option>
@@ -70,15 +70,66 @@
                 <h3>Wynik (Schema):</h3>
                 <textarea readonly rows="25" th:text="${schemaOutput}"></textarea>
             </div>
+            
+            <div class="col" th:unless="${schemaOutput}">
+                <h3>Wynik (Schema):</h3>
+                <textarea id="schemaOutputArea" readonly rows="25"></textarea>
+            </div>
         </div>
         <button type="submit">Generuj schemat</button>
-        <button type="submit" th:formaction="@{/checkJson}">Sprawdź czy twój json jest poprawny</button>
+        <button type="submit" th:formaction="@{/checkJson}">Sprawdź czy twój json jest poprawny (Dla wybranego schematu)</button>
     </form>
+
+    <div th:if="${schemaOutput}" class="schema-save-form">
+        <h4>Zapisz wygenerowany schemat</h4>
+        <form th:action="@{/saveSchema}" method="post">
+            <input type="hidden" name="schemaData" th:value="${schemaOutput}" />
+            <input type="hidden" name="jsonInput" th:value="${jsonInput}" />
+            <label>Nazwa schematu:</label>
+            <input type="text" name="schemaName" placeholder="Wprowadź nazwę..." required />
+            <button type="submit">Zapisz schemat</button>
+        </form>
+    </div>
+    
+    <div th:if="${message != null}" style="background-color: #d4edda; border-radius: 4px;">
+        <span th:text="${message}"></span>
+    </div>
+
     <div th:if="${isValid != null}" th:style="${isValid} ? 'background-color: #d4edda;' : 'background-color: #f8d7da;'">
         <span th:if="${isValid}">Twój JSON jest poprawny</span>
         <span th:if="${!isValid}">Twój JSON jest niepoprawny, ponieważ: <span th:text="${error}"/></span>
     </div>
 </div>
+
+<script>
+    function loadSchema() {
+        const select = document.getElementById('schemaSelect');
+        const schemaId = select.value;
+        const textArea = document.getElementById('schemaOutputArea');
+
+        if (!schemaId) {
+            if (!textArea.value.includes("title") && textArea.value === "") {
+               textArea.value = ""; 
+            }
+            return;
+        }
+
+        fetch('/api/schemas/' + schemaId)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(data => {
+                textArea.value = data;
+            })
+            .catch(error => {
+                console.error('Błąd podczas pobierania schematu:', error);
+                textArea.value = 'Błąd pobierania schematu: ' + error.message;
+            });
+    }
+</script>
 
 </body>
 </html>
