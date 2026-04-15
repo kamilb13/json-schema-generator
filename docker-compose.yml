@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+#  app:
+#    build: .
+#    container_name: json-schema-generator-app
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/json-schema-generator
+#    depends_on:
+#      - mongodb
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    restart: always
+
+volumes:
+  mongodb_data:
