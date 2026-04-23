@@ -73,7 +73,7 @@
             
             <div class="col" th:unless="${schemaOutput}">
                 <h3>Wynik (Schema):</h3>
-                <textarea id="schemaOutputArea" readonly rows="25"></textarea>
+                <textarea name="schemaOutput" id="schemaOutputArea" readonly rows="25"></textarea>
             </div>
         </div>
         <button type="submit">Generuj schemat</button>
@@ -97,7 +97,7 @@
 
     <div th:if="${isValid != null}" th:style="${isValid} ? 'background-color: #d4edda;' : 'background-color: #f8d7da;'">
         <span th:if="${isValid}">Twój JSON jest poprawny</span>
-        <span th:if="${!isValid}">Twój JSON jest niepoprawny, ponieważ: <span th:text="${error}"/></span>
+        <span th:if="${!isValid}">Twój JSON jest niepoprawny <span th:text="${error}"/></span>
     </div>
 </div>
 

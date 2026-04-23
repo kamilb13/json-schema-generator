@@ -49,21 +49,31 @@ public class SchemaController {
     }
 
     @PostMapping("/checkJson")
-    public String isJsonValid(@RequestParam String jsonInput, Model model, HttpServletRequest request) {
+    public String isJsonValid(@RequestParam String jsonInput, @RequestParam String schemaOutput, Model model, HttpServletRequest request) {
         model.addAttribute("schemas", jsonSchemaRepository.findAll());
 
         request.setAttribute("jsonInput", jsonInput);
         if (jsonInput == null || jsonInput.isEmpty()) {
             throw new IllegalArgumentException("Json input cannot be null or empty");
         }
+
         try {
-            objectMapper.readTree(jsonInput);
-            model.addAttribute("isValid", true);
+            Map<String, Object> parsedJson = MyObjectMapper.fromJson(jsonInput);
+            Map<String, Object> schema = schemaService.generateSchema(parsedJson);
+
+            String prettySchema = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(schema);
+
+            Object schemaOutputObj = objectMapper.readValue(schemaOutput, Object.class);
+            String prettySchemaOutput = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(schemaOutputObj);
+
+            boolean isValid = prettySchema.equals(prettySchemaOutput);
+            model.addAttribute("isValid", isValid);
+            model.addAttribute("schemaOutput", schemaOutput);
         } catch (Exception e) {
             model.addAttribute("isValid", false);
             model.addAttribute("error", e.getMessage());
         }
-        
+
         model.addAttribute("jsonInput", jsonInput);
         return "index";
     }
