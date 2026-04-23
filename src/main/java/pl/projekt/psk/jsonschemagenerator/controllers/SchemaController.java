@@ -41,9 +41,9 @@ public class SchemaController {
             throw new IllegalArgumentException("Json input cannot be null or empty");
         }
         Map<String, Object> parsedJson = MyObjectMapper.fromJson(jsonInput);
-        String prettySchema = schemaService.generateSchema(parsedJson);
+        Map<String, Object> schema = schemaService.generateSchema(parsedJson);
 
-        model.addAttribute("schemaOutput", prettySchema);
+        model.addAttribute("schemaOutput", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
         model.addAttribute("jsonInput", jsonInput);
         return "index";
     }
