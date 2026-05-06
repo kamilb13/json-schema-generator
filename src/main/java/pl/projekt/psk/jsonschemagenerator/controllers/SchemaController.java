@@ -45,6 +45,7 @@ public class SchemaController {
 
         model.addAttribute("schemaOutput", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
         model.addAttribute("jsonInput", jsonInput);
+        model.addAttribute("isGenerated", true);
         return "index";
     }
 

@@ -70,32 +70,36 @@
                 <h3>Wynik (Schema):</h3>
                 <textarea readonly rows="25" th:text="${schemaOutput}"></textarea>
             </div>
-            
+
             <div class="col" th:unless="${schemaOutput}">
                 <h3>Wynik (Schema):</h3>
                 <textarea name="schemaOutput" id="schemaOutputArea" readonly rows="25"></textarea>
             </div>
         </div>
         <button type="submit">Generuj schemat</button>
-        <button type="submit" th:formaction="@{/checkJson}">Sprawdź czy twój json jest poprawny (Dla wybranego schematu)</button>
+        <button type="submit" th:formaction="@{/checkJson}">Sprawdź czy twój json jest poprawny (Dla wybranego
+            schematu)
+        </button>
     </form>
 
-    <div th:if="${schemaOutput}" class="schema-save-form">
+    <div th:if="${isGenerated}" class="schema-save-form">
         <h4>Zapisz wygenerowany schemat</h4>
         <form th:action="@{/saveSchema}" method="post">
-            <input type="hidden" name="schemaData" th:value="${schemaOutput}" />
-            <input type="hidden" name="jsonInput" th:value="${jsonInput}" />
+            <input type="hidden" name="schemaData" th:value="${schemaOutput}"/>
+            <input type="hidden" name="jsonInput" th:value="${jsonInput}"/>
             <label>Nazwa schematu:</label>
-            <input type="text" name="schemaName" placeholder="Wprowadź nazwę..." required />
+            <input type="text" name="schemaName" placeholder="Wprowadź nazwę..." required/>
             <button type="submit">Zapisz schemat</button>
         </form>
     </div>
-    
+
     <div th:if="${message != null}" style="background-color: #d4edda; border-radius: 4px;">
         <span th:text="${message}"></span>
     </div>
 
-    <div th:if="${isValid != null}" th:style="${isValid} ? 'background-color: #d4edda;' : 'background-color: #f8d7da;'">
+    <div th:if="${isValid != null}"
+         th:style="${isValid} ? 'margin: 10px; padding: 10px; border-radius: 4px; background-color: #d4edda;'
+                         : 'margin: 10px; padding: 10px; border-radius: 4px; background-color: #f8d7da;'">
         <span th:if="${isValid}">Twój JSON jest poprawny</span>
         <span th:if="${!isValid}">Twój JSON jest niepoprawny <span th:text="${error}"/></span>
     </div>
@@ -109,7 +113,7 @@
 
         if (!schemaId) {
             if (!textArea.value.includes("title") && textArea.value === "") {
-               textArea.value = ""; 
+                textArea.value = "";
             }
             return;
         }
