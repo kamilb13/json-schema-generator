@@ -34,6 +34,7 @@ public class MyObjectMapper {
         }
         int licznikKlamr = 0;
         int licznikNawiasow = 0;
+        boolean isInsideString = false;
 
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
 
@@ -43,6 +44,15 @@ public class MyObjectMapper {
         for (char znak : cleanJson.toCharArray()) {
             licznikKlamr = liczKlamryDoDalszychKrokow(znak, licznikKlamr);
             licznikNawiasow = liczNawiasyDoDalszychKrokow(znak, licznikNawiasow);
+
+            if (znak == '"') {
+                isInsideString = !isInsideString;
+            }
+
+            if (isInsideString) {
+                bufor.append(znak);
+                continue;
+            }
 
             if (znak == ':' && licznikKlamr == 0 && licznikNawiasow == 0) {
                 aktualnyKlucz = bufor.toString().trim().replace("\"", EMPTY_STRING);
@@ -117,12 +127,22 @@ public class MyObjectMapper {
 
         int licznikKlamr = 0;
         int licznikNawiasow = 0;
+        boolean isInsideString = false;
 
         StringBuilder bufor = new StringBuilder();
 
         for (char znak : text.toCharArray()) {
             licznikKlamr = liczKlamryDoDalszychKrokow(znak, licznikKlamr);
             licznikNawiasow = liczNawiasyDoDalszychKrokow(znak, licznikNawiasow);
+
+            if (znak == '"') {
+                isInsideString = !isInsideString;
+            }
+
+            if (isInsideString) {
+                bufor.append(znak);
+                continue;
+            }
 
             if (znak == ',' && licznikKlamr == 0 && licznikNawiasow == 0) {
                 list.add(parseValue(bufor.toString()));
