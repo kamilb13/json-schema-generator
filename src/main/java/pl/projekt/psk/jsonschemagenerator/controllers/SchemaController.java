@@ -12,6 +12,7 @@ import pl.projekt.psk.jsonschemagenerator.services.SchemaService;
 import pl.projekt.psk.jsonschemagenerator.repositories.JsonSchemaRepository;
 import pl.projekt.psk.jsonschemagenerator.models.JsonSchema;
 import tools.jackson.core.StreamReadFeature;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -62,12 +63,9 @@ public class SchemaController {
             Map<String, Object> parsedJson = MyObjectMapper.fromJson(jsonInput);
             Map<String, Object> schema = schemaService.generateSchema(parsedJson);
 
-            String prettySchema = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(schema);
-
-            Object schemaOutputObj = objectMapper.readValue(schemaOutput, Object.class);
-            String prettySchemaOutput = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(schemaOutputObj);
-
-            boolean isValid = prettySchema.equals(prettySchemaOutput);
+            JsonNode generatedSchemaNode = objectMapper.valueToTree(schema);
+            JsonNode providedSchemaNode = objectMapper.readTree(schemaOutput);
+            boolean isValid = generatedSchemaNode.equals(providedSchemaNode);
             model.addAttribute("isValid", isValid);
             model.addAttribute("schemaOutput", schemaOutput);
         } catch (Exception e) {
