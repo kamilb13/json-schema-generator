@@ -52,4 +52,24 @@ class MyObjectMapperTest {
         assertEquals("java", tags.get(0));
         assertEquals("test", tags.get(1));
     }
+
+    @Test
+    public void testFromJson_CommaInString() {
+        // Given
+        String json = "{\n" +
+                "  \"name\": \"George Washington\",\n" +
+                "  \"birthday\": \"February 22, 1732\",\n" +
+                "  \"address\": \"Mount Vernon, Virginia, United States\"\n" +
+                "}\n" +
+                "\n";
+
+        // When
+        Map<String, Object> result = MyObjectMapper.fromJson(json);
+
+        // Then
+        assertEquals("George Washington", result.get("name"));
+        assertEquals("February 22, 1732", result.get("birthday"));
+        assertEquals("Mount Vernon, Virginia, United States", result.get("address"));
+    }
+
 }
