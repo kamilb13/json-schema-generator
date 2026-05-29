@@ -72,4 +72,58 @@ class MyObjectMapperTest {
         assertEquals("Mount Vernon, Virginia, United States", result.get("address"));
     }
 
+    @Test
+    public void testFromJson_MapsToInteger() {
+        // Given
+        String json = "{\"user\": {\"id\": 1, \"active\": true}}";
+
+        // When
+        Map<String, Object> result = MyObjectMapper.fromJson(json);
+        Map<?, ?> user = assertInstanceOf(Map.class, result.get("user"));
+
+        // Then
+        assertInstanceOf(Integer.class, user.get("id"));
+        assertEquals(1,  user.get("id"));
+    }
+
+    @Test
+    public void testFromJson_MapsToDouble() {
+        // Given
+        String json = "{\"car\": {\"id\": 1, \"price\": 2.0}}";
+
+        // When
+        Map<String, Object> result = MyObjectMapper.fromJson(json);
+        Map<?, ?> car = assertInstanceOf(Map.class, result.get("car"));
+
+        // Then
+        assertInstanceOf(Double.class, car.get("price"));
+        assertEquals(2.0, car.get("price"));
+    }
+
+    @Test
+    public void testFromJson_MapsToBoolean() {
+        // Given
+        String json = "{\"user\": {\"id\": 1, \"active\": true}}";
+
+        // When
+        Map<String, Object> result = MyObjectMapper.fromJson(json);
+        Map<?, ?> user = assertInstanceOf(Map.class, result.get("user"));
+
+        // Then
+        assertInstanceOf(Boolean.class, user.get("active"));
+        assertEquals(true,  user.get("active"));
+    }
+
+    @Test
+    public void testFromJson_MapsToString() {
+        // Given
+        String json = "{\"name\": \"John\", \"age_in_quotes\": \"30\"}";
+
+        // When
+        Map<String, Object> result = MyObjectMapper.fromJson(json);
+
+        // Then
+        assertInstanceOf(String.class,  result.get("age_in_quotes"));
+        assertEquals("30", result.get("age_in_quotes"));
+    }
 }
