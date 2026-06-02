@@ -22,8 +22,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SchemaController {
     private final ObjectMapper objectMapper = JsonMapper.builder()
-            .enable(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION)
-            .build();
+                                                        .enable(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION)
+                                                        .build();
     private final SchemaService schemaService;
     private final JsonSchemaRepository jsonSchemaRepository;
 
@@ -44,7 +44,12 @@ public class SchemaController {
         Map<String, Object> parsedJson = MyObjectMapper.fromJson(jsonInput);
         Map<String, Object> schema = schemaService.generateSchema(parsedJson);
 
-        model.addAttribute("schemaOutput", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
+        String prettySchema = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(schema);
+
+//        TODO replace with MyObjectMapper after writing toPrettyJson method
+//        String prettySchema = MyObjectMapper.toPrettyJson();
+
+        model.addAttribute("schemaOutput", prettySchema);
         model.addAttribute("jsonInput", jsonInput);
         model.addAttribute("isGenerated", true);
         return "index";
@@ -63,9 +68,9 @@ public class SchemaController {
             Map<String, Object> parsedJson = MyObjectMapper.fromJson(jsonInput);
             Map<String, Object> schema = schemaService.generateSchema(parsedJson);
 
-            JsonNode generatedSchemaNode = objectMapper.valueToTree(schema);
-            JsonNode providedSchemaNode = objectMapper.readTree(schemaOutput);
-            boolean isValid = generatedSchemaNode.equals(providedSchemaNode);
+            Map<String, Object> providedSchema = MyObjectMapper.fromJson(schemaOutput);
+            boolean isValid = schema.equals(providedSchema);
+
             model.addAttribute("isValid", isValid);
             model.addAttribute("schemaOutput", schemaOutput);
         } catch (Exception e) {

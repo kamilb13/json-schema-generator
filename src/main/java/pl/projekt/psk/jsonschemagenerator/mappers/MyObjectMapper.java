@@ -71,48 +71,6 @@ public class MyObjectMapper {
         return map;
     }
 
-    private static int liczKlamryDoDalszychKrokow(char znak, int licznikKlamr) {
-        if (KLAMRA_CHAR_O == znak) licznikKlamr++;
-        if (KLAMRA_CHAR_Z == znak) licznikKlamr--;
-        return licznikKlamr;
-    }
-
-    private static int liczNawiasyDoDalszychKrokow(char znak, int licznikNawiasow) {
-        if ('[' == znak) licznikNawiasow++;
-        if (']' == znak) licznikNawiasow--;
-        return licznikNawiasow;
-    }
-
-    private static Object parseValue(String tekst) {
-        tekst = tekst.trim();
-
-        if (tekst.startsWith(String.valueOf(KLAMRA_CHAR_O))) {
-            return fromJson(tekst);
-        }
-
-        if (tekst.startsWith("[")) {
-            return parseArray(tekst);
-        }
-
-        if (tekst.equals("true") || tekst.equals("false")) {
-            return Boolean.parseBoolean(tekst);
-        }
-
-        if (tekst.equals("null")) {
-            return null;
-        }
-
-        try {
-            return Integer.parseInt(tekst);
-        } catch (NumberFormatException e) {
-            try {
-                return Double.parseDouble(tekst);
-            } catch (NumberFormatException ex) {
-                return tekst.replace("\"", EMPTY_STRING);
-            }
-        }
-    }
-
     private static List<Object> parseArray(String text) {
         var list = new ArrayList<>();
 
@@ -157,4 +115,85 @@ public class MyObjectMapper {
         }
         return list;
     }
+
+    private static Object parseValue(String tekst) {
+        tekst = tekst.trim();
+
+        if (tekst.startsWith(String.valueOf(KLAMRA_CHAR_O))) {
+            return fromJson(tekst);
+        }
+
+        if (tekst.startsWith("[")) {
+            return parseArray(tekst);
+        }
+
+        if (tekst.equals("true") || tekst.equals("false")) {
+            return Boolean.parseBoolean(tekst);
+        }
+
+        if (tekst.equals("null")) {
+            return null;
+        }
+
+        try {
+            return Integer.parseInt(tekst);
+        } catch (NumberFormatException e) {
+            try {
+                return Double.parseDouble(tekst);
+            } catch (NumberFormatException ex) {
+                return tekst.replace("\"", EMPTY_STRING);
+            }
+        }
+    }
+
+    public static String toPrettyJson(Object object) {
+        if (object == null) {
+            return "null";
+        }
+
+        if (object instanceof String) {
+            return "\"" + object + "\"";
+        }
+
+        if (object instanceof Number || object instanceof Boolean) {
+            return object.toString();
+        }
+
+        if (object instanceof List) {
+            StringBuilder sb = new StringBuilder("[");
+            List<?> list = (List<?>) object;
+            for (int i = 0; i < list.size(); i++) {
+                sb.append(toPrettyJson(list.get(i)));
+                if (i < list.size() - 1) sb.append(", ");
+            }
+            return sb.append("]").toString();
+        }
+
+        if (object instanceof Map) {
+            StringBuilder sb = new StringBuilder("{");
+            Map<?, ?> map = (Map<?, ?>) object;
+            int i = 0;
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                sb.append("\"").append(entry.getKey()).append("\": ").append(toPrettyJson(entry.getValue()));
+                if (++i < map.size()) sb.append(", ");
+            }
+            return sb.append("}").toString();
+        }
+
+        return "\"" + object + "\"";
+    }
+
+    private static int liczKlamryDoDalszychKrokow(char znak, int licznikKlamr) {
+        if (KLAMRA_CHAR_O == znak) licznikKlamr++;
+        if (KLAMRA_CHAR_Z == znak) licznikKlamr--;
+        return licznikKlamr;
+    }
+
+    private static int liczNawiasyDoDalszychKrokow(char znak, int licznikNawiasow) {
+        if ('[' == znak) licznikNawiasow++;
+        if (']' == znak) licznikNawiasow--;
+        return licznikNawiasow;
+    }
+
+
 }

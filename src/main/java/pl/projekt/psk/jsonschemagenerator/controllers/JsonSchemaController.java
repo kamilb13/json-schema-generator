@@ -9,10 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.projekt.psk.jsonschemagenerator.dto.JsonSchemaRequest;
+import pl.projekt.psk.jsonschemagenerator.mappers.MyObjectMapper;
 import pl.projekt.psk.jsonschemagenerator.models.JsonSchema;
 import pl.projekt.psk.jsonschemagenerator.repositories.JsonSchemaRepository;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/schemas")
@@ -35,6 +38,10 @@ public class JsonSchemaController {
                     try {
                         Object json = objectMapper.readValue(schema.getSchemaData(), Object.class);
                         String prettySchema = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
+//                        TODO replace with MyObjectMapper after writing toPrettyJson method
+//                        Map<String, Object> parsedMap = MyObjectMapper.fromJson(schema.getSchemaData());
+//                        String prettySchema = MyObjectMapper.toPrettyJson(parsedMap);
+
                         return ResponseEntity.ok().body(prettySchema);
                     } catch (Exception e) {
                         return ResponseEntity.ok().body(schema.getSchemaData());
