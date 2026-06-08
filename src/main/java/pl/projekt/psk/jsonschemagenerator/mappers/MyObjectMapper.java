@@ -146,7 +146,7 @@ public class MyObjectMapper {
         }
     }
 
-    public static String toPrettyJson(Object object) {
+    public static String toPrettyJson(Object object, int indentLevel) {
         if (object == null) {
             return "null";
         }
@@ -159,25 +159,45 @@ public class MyObjectMapper {
             return object.toString();
         }
 
+        String indent = "  ".repeat(indentLevel);
+        String innerIndent = "  ".repeat(indentLevel + 1);
+
         if (object instanceof List) {
-            StringBuilder sb = new StringBuilder("[");
             List<?> list = (List<?>) object;
-            for (int i = 0; i < list.size(); i++) {
-                sb.append(toPrettyJson(list.get(i)));
-                if (i < list.size() - 1) sb.append(", ");
+            if (list.isEmpty()) {
+                return "[]";
             }
-            return sb.append("]").toString();
+
+            StringBuilder sb = new StringBuilder("[\n");
+            for (int i = 0; i < list.size(); i++) {
+                sb.append(innerIndent).append(toPrettyJson(list.get(i), indentLevel + 1));
+                if (i < list.size() - 1) {
+                    sb.append(",");
+                }
+                sb.append("\n");
+            }
+            return sb.append(indent).append("]").toString();
         }
 
         if (object instanceof Map) {
-            StringBuilder sb = new StringBuilder("{");
             Map<?, ?> map = (Map<?, ?>) object;
+            if (map.isEmpty()) {
+                return "{}";
+            }
+
+            StringBuilder sb = new StringBuilder("{\n");
             int i = 0;
             for (Map.Entry<?, ?> entry : map.entrySet()) {
-                sb.append("\"").append(entry.getKey()).append("\": ").append(toPrettyJson(entry.getValue()));
-                if (++i < map.size()) sb.append(", ");
+                sb.append(innerIndent)
+                  .append("\"").append(entry.getKey()).append("\": ")
+                  .append(toPrettyJson(entry.getValue(), indentLevel + 1));
+
+                if (++i < map.size()) {
+                    sb.append(",");
+                }
+                sb.append("\n");
             }
-            return sb.append("}").toString();
+            return sb.append(indent).append("}").toString();
         }
 
         return "\"" + object + "\"";
@@ -194,6 +214,4 @@ public class MyObjectMapper {
         if (']' == znak) licznikNawiasow--;
         return licznikNawiasow;
     }
-
-
 }

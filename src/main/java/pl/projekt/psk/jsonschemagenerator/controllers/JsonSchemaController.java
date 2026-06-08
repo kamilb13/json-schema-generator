@@ -12,9 +12,6 @@ import pl.projekt.psk.jsonschemagenerator.dto.JsonSchemaRequest;
 import pl.projekt.psk.jsonschemagenerator.mappers.MyObjectMapper;
 import pl.projekt.psk.jsonschemagenerator.models.JsonSchema;
 import pl.projekt.psk.jsonschemagenerator.repositories.JsonSchemaRepository;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
-
 import java.util.Map;
 
 @RestController
@@ -22,7 +19,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JsonSchemaController {
     private final JsonSchemaRepository jsonSchemaRepository;
-    private final ObjectMapper objectMapper = JsonMapper.builder().build();
 
     @PostMapping
     public String createJsonSchema(@RequestBody JsonSchemaRequest request) {
@@ -36,11 +32,8 @@ public class JsonSchemaController {
         return jsonSchemaRepository.findById(id)
                 .map(schema -> {
                     try {
-                        Object json = objectMapper.readValue(schema.getSchemaData(), Object.class);
-                        String prettySchema = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
-//                        TODO replace with MyObjectMapper after writing toPrettyJson method
-//                        Map<String, Object> parsedMap = MyObjectMapper.fromJson(schema.getSchemaData());
-//                        String prettySchema = MyObjectMapper.toPrettyJson(parsedMap);
+                        Map<String, Object> parsedMap = MyObjectMapper.fromJson(schema.getSchemaData());
+                        String prettySchema = MyObjectMapper.toPrettyJson(parsedMap, 0);
 
                         return ResponseEntity.ok().body(prettySchema);
                     } catch (Exception e) {

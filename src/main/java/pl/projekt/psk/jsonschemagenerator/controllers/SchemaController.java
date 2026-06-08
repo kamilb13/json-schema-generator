@@ -11,19 +11,11 @@ import pl.projekt.psk.jsonschemagenerator.mappers.MyObjectMapper;
 import pl.projekt.psk.jsonschemagenerator.services.SchemaService;
 import pl.projekt.psk.jsonschemagenerator.repositories.JsonSchemaRepository;
 import pl.projekt.psk.jsonschemagenerator.models.JsonSchema;
-import tools.jackson.core.StreamReadFeature;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
-
 import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
 public class SchemaController {
-    private final ObjectMapper objectMapper = JsonMapper.builder()
-                                                        .enable(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION)
-                                                        .build();
     private final SchemaService schemaService;
     private final JsonSchemaRepository jsonSchemaRepository;
 
@@ -43,11 +35,7 @@ public class SchemaController {
         }
         Map<String, Object> parsedJson = MyObjectMapper.fromJson(jsonInput);
         Map<String, Object> schema = schemaService.generateSchema(parsedJson);
-
-        String prettySchema = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(schema);
-
-//        TODO replace with MyObjectMapper after writing toPrettyJson method
-//        String prettySchema = MyObjectMapper.toPrettyJson();
+        String prettySchema = MyObjectMapper.toPrettyJson(schema, 0);
 
         model.addAttribute("schemaOutput", prettySchema);
         model.addAttribute("jsonInput", jsonInput);
